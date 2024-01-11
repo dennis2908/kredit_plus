@@ -1,5 +1,5 @@
 ```
-Built with golang v1.18, beego
+Built with golang v1.18, framework beego 
 ```
 
 ```
@@ -11,7 +11,7 @@ test : menggunakan Ginkgo
 ```
 
 ```
-Postman Collection : folder postman_collection
+Postman Collection : folder Postman Collection
 ```
 
 ```

@@ -3,6 +3,7 @@ package main
 import (
 	_ "fmt"
 	_ "kredit_plus/routers"
+	"kredit_plus/ssrf"
 	"log"
 	"os"
 	"runtime"
@@ -40,6 +41,11 @@ func init() { // init instead of int
 	orm.RunCommand()
 }
 func main() {
+	err := ssrf.Main()
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	numberOfCores := runtime.NumCPU()
 	runtime.GOMAXPROCS(numberOfCores)
 	var wg sync.WaitGroup

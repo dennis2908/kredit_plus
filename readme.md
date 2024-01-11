@@ -17,3 +17,7 @@ Postman Collection : folder Postman Collection
 ```
 Rancangan Database & Aplikasi : folder Rancangan Database & Aplikasi
 ```
+
+```
+3 pencegahan serangan keamanan  : injection, Broken Access Control, Server Side Request Forgery
+```

@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	models "kredit_plus/models"
-	"kredit_plus/structs"
 	_ "context"
 	"encoding/json"
 	_ "fmt"
+	models "kredit_plus/models"
+	"kredit_plus/structs"
 	"time"
 
 	"strconv"
@@ -28,7 +28,7 @@ func (api *KonsumensController) GetAllKonsumens() {
 	var konsumens []models.Konsumens
 	num, err := o.QueryTable("konsumens").All(&konsumens)
 	if err == nil && num > 0 {
-		api.Data["json"] = konsumens	
+		api.Data["json"] = konsumens
 	}
 	api.ServeJSON()
 }
@@ -38,9 +38,9 @@ func (api *KonsumensController) GetKonsumensById() {
 	o.Using("default")
 	var konsumens []models.Konsumens
 	idInt, _ := strconv.Atoi(api.Ctx.Input.Param(":id"))
-	num, err := o.QueryTable("konsumens").Filter("id",idInt).All(&konsumens)
+	num, err := o.QueryTable("konsumens").Filter("id", idInt).All(&konsumens)
 	if err == nil && num > 0 {
-		api.Data["json"] = konsumens	
+		api.Data["json"] = konsumens
 	}
 	api.ServeJSON()
 }
@@ -51,19 +51,6 @@ func AllKonsumensCheck(api *KonsumensController) string {
 	frm := api.Ctx.Input.RequestBody
 	ul := &structs.GetKonsumen{}
 	json.Unmarshal(frm, ul)
-	// beego.Debug(ul)
-	// Nik := ul.Nik
-	// Full_name := ul.Full_name
-	// Legal_name := ul.Legal_name
-	// Place_birth := ul.Place_birth
-	// Date_birth := ul.Date_birth
-	// Salary := ul.Salary
-	// Foto_ktp := ul.Foto_ktp
-	// Foto_selfie := ul.Foto_selfie
-
-	// u := structs.InsertKonsumen{Konsumen : models.Konsumen{Nik : ul.Nik, Full_name: ul.Full_name, Legal_name:ul.Legal_name, Place_birth:ul.Place_birth, Salary:ul.Salary, Foto_ktp:ul.Foto_ktp ,Foto_selfie:ul.Foto_selfie},Date_birth:ul.Date_birth}
-	// u.Konsumen = {Nik : Nik, Full_name:Full_name, Legal_name:Legal_name, Place_birth, Salary, Foto_ktp ,Foto_selfie}
-	// u.Date_birth = Date_birth
 	valid.Required(ul.Nik, "Nik")
 	valid.Required(ul.Full_name, "Full_name")
 	valid.Required(ul.Legal_name, "Legal_name")
@@ -97,8 +84,8 @@ func (api *KonsumensController) CreateKonsumens() {
 
 	ul := &structs.GetKonsumen{}
 	json.Unmarshal(frm, ul)
-	dateBirth,_ := time.Parse("2006-01-02", ul.Date_birth)
-	Qry := models.Konsumens{Konsumen : models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie},Date_birth: dateBirth}
+	dateBirth, _ := time.Parse("2006-01-02", ul.Date_birth)
+	Qry := models.Konsumens{Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}
 	o.Insert(&Qry)
 	api.Data["json"] = "Successfully save data"
 	api.ServeJSON()
@@ -119,11 +106,11 @@ func (api *KonsumensController) UpdateKonsumens() {
 
 	ul := &structs.GetKonsumen{}
 	json.Unmarshal(frm, ul)
-	dateBirth,_ := time.Parse("2006-01-02", ul.Date_birth)
-	Qry := models.Konsumens{Id:idInt,Konsumen : models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie},Date_birth: dateBirth}
+	dateBirth, _ := time.Parse("2006-01-02", ul.Date_birth)
+	Qry := models.Konsumens{Id: idInt, Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}
 	o.Update(&Qry)
-	
+
 	api.Data["json"] = "Successfully update data with id  =  " + api.Ctx.Input.Param(":id")
-	
+
 	api.ServeJSON()
 }

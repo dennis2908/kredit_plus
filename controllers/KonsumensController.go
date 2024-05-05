@@ -1,20 +1,22 @@
 package controllers
 
 import (
-	_ "context"
+	"context"
 	"encoding/json"
+	"fmt"
 	_ "fmt"
 	models "kredit_plus/models"
 	"kredit_plus/structs"
-	"time"
-
+	"log"
 	"strconv"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/beego/beego/v2/core/logs"
 	"github.com/beego/beego/v2/core/validation"
 	_ "github.com/leekchan/accounting"
+	amqp "github.com/rabbitmq/amqp091-go"
 	_ "github.com/shopspring/decimal"
 )
 
@@ -70,47 +72,157 @@ func AllKonsumensCheck(api *KonsumensController) string {
 
 	return ""
 }
+func failOnError(err error, msg string) string {
+	if err != nil {
+		return "Error"
+	} else {
+		return ""
+	}
+}
+
+func UpdateKonsumensMessage(api *KonsumensController) string {
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	msg := failOnError(err, "Failed to connect to RabbitMQ")
+	if msg == "Error" {
+		return "Error"
+	}
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"updateKonsumens", // name
+		false,             // durable
+		false,             // delete when unused
+		false,             // exclusive
+		false,             // no-wait
+		nil,               // arguments
+	)
+	msg = failOnError(err, "Failed to declare a queue")
+	if msg == "Error" {
+		return "Error"
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	ul := &structs.GetKonsumen{}
+	json.Unmarshal(api.Ctx.Input.RequestBody, ul)
+	dateBirth, _ := time.Parse("2006-01-02", ul.Date_birth)
+	idInt, _ := strconv.Atoi(api.Ctx.Input.Param(":id"))
+	// qry := structs.GetKonsumenWID{Id: idInt,Konsumen:models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}}
+
+	dataSend, err := json.Marshal(models.Konsumens{Id: idInt, Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth})
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	// json.Marshal(Qry)
+	body := "send data"
+	err = ch.PublishWithContext(ctx,
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(dataSend),
+		})
+	msg = failOnError(err, "Failed to publish a message")
+	if msg == "Error" {
+		return "Error"
+	}
+	log.Printf(" [x] Sent %s\n", body)
+
+	return "success"
+
+}
+
+func CreateKonsumensMessage(api *KonsumensController) string {
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	msg := failOnError(err, "Failed to connect to RabbitMQ")
+	if msg == "Error" {
+		return "Error"
+	}
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"createKonsumens", // name
+		false,             // durable
+		false,             // delete when unused
+		false,             // exclusive
+		false,             // no-wait
+		nil,               // arguments
+	)
+	msg = failOnError(err, "Failed to declare a queue")
+	if msg == "Error" {
+		return "Error"
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	body := "send data"
+	err = ch.PublishWithContext(ctx,
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(api.Ctx.Input.RequestBody),
+		})
+	msg = failOnError(err, "Failed to publish a message")
+	if msg == "Error" {
+		return "Error"
+	}
+	log.Printf(" [x] Sent %s\n", body)
+
+	return "success"
+
+}
 
 func (api *KonsumensController) CreateKonsumens() {
-	frm := api.Ctx.Input.RequestBody
 	if AllKonsumensCheck(api) != "" {
 		api.Data["json"] = AllKonsumensCheck(api)
 		api.ServeJSON()
 		return
 	}
 
-	o := orm.NewOrm()
-	o.Using("default")
+	retData := CreateKonsumensMessage(api)
 
-	ul := &structs.GetKonsumen{}
-	json.Unmarshal(frm, ul)
-	dateBirth, _ := time.Parse("2006-01-02", ul.Date_birth)
-	Qry := models.Konsumens{Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}
-	o.Insert(&Qry)
-	api.Data["json"] = "Successfully save data"
-	api.ServeJSON()
+	if retData == "success" {
+		api.Data["json"] = "Successfully insert data"
+		api.Ctx.ResponseWriter.WriteHeader(200)
+		api.ServeJSON()
+	} else {
+		api.Ctx.ResponseWriter.WriteHeader(500)
+		api.Data["json"] = "Error"
+
+		api.ServeJSON()
+	}
 }
 
 func (api *KonsumensController) UpdateKonsumens() {
-	frm := api.Ctx.Input.RequestBody
 	if AllKonsumensCheck(api) != "" {
 		api.Data["json"] = AllKonsumensCheck(api)
 		api.ServeJSON()
 		return
 	}
 
-	o := orm.NewOrm()
-	o.Using("default")
+	retData := UpdateKonsumensMessage(api)
 
-	idInt, _ := strconv.Atoi(api.Ctx.Input.Param(":id"))
+	if retData == "success" {
+		api.Data["json"] = "Successfully update data with id " + api.Ctx.Input.Param(":id")
+		api.Ctx.ResponseWriter.WriteHeader(200)
+		api.ServeJSON()
+	} else {
+		api.Ctx.ResponseWriter.WriteHeader(500)
+		api.Data["json"] = "Error"
 
-	ul := &structs.GetKonsumen{}
-	json.Unmarshal(frm, ul)
-	dateBirth, _ := time.Parse("2006-01-02", ul.Date_birth)
-	Qry := models.Konsumens{Id: idInt, Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}
-	o.Update(&Qry)
-
-	api.Data["json"] = "Successfully update data with id  =  " + api.Ctx.Input.Param(":id")
-
-	api.ServeJSON()
+		api.ServeJSON()
+	}
 }

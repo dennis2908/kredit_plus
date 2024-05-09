@@ -18,6 +18,7 @@ import (
 	_ "github.com/leekchan/accounting"
 	amqp "github.com/rabbitmq/amqp091-go"
 	_ "github.com/shopspring/decimal"
+	"github.com/xuri/excelize/v2"
 )
 
 type KonsumensController struct {
@@ -56,6 +57,8 @@ func AllKonsumensCheck(api *KonsumensController) string {
 	valid.Required(ul.Nik, "Nik")
 	valid.Required(ul.Full_name, "Full_name")
 	valid.Required(ul.Legal_name, "Legal_name")
+	valid.Required(ul.Email, "Email")
+	valid.Email(ul.Email, "Email")
 	valid.Required(ul.Place_birth, "Place_birth")
 	valid.Required(ul.Date_birth, "Date_birth")
 	valid.Required(ul.Salary, "Salary")
@@ -113,7 +116,7 @@ func UpdateKonsumensMessage(api *KonsumensController) string {
 	idInt, _ := strconv.Atoi(api.Ctx.Input.Param(":id"))
 	// qry := structs.GetKonsumenWID{Id: idInt,Konsumen:models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}}
 
-	dataSend, err := json.Marshal(models.Konsumens{Id: idInt, Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth})
+	dataSend, err := json.Marshal(models.Konsumens{Id: idInt, Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Email: ul.Email, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth})
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -185,6 +188,100 @@ func CreateKonsumensMessage(api *KonsumensController) string {
 
 }
 
+func EmailKonsumensMessage(api *KonsumensController) string {
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	msg := failOnError(err, "Failed to connect to RabbitMQ")
+	if msg == "Error" {
+		return "Error"
+	}
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"sendEmailToKonsumens", // name
+		false,                  // durable
+		false,                  // delete when unused
+		false,                  // exclusive
+		false,                  // no-wait
+		nil,                    // arguments
+	)
+	msg = failOnError(err, "Failed to declare a queue")
+	if msg == "Error" {
+		return "Error"
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	body := "send data"
+	err = ch.PublishWithContext(ctx,
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(api.Ctx.Input.RequestBody),
+		})
+	msg = failOnError(err, "Failed to publish a message")
+	if msg == "Error" {
+		return "Error"
+	}
+	log.Printf(" [x] Sent %s\n", body)
+
+	return "success"
+
+}
+
+func (api *KonsumensController) ExcelKonsumens() {
+
+	o := orm.NewOrm()
+	o.Using("default")
+	var konsumens []models.Konsumens
+	num, err := o.QueryTable("konsumens").All(&konsumens)
+	if err == nil && num > 0 {
+		api.Data["json"] = konsumens
+	}
+	xlsx := excelize.NewFile()
+	sheetName := "Sheet1"
+
+	xlsx.SetSheetName("Sheet1", sheetName)
+
+	// Add headers
+	xlsx.SetCellValue(sheetName, "A1", "Email")
+	xlsx.SetCellValue(sheetName, "B1", "Nik")
+	xlsx.SetCellValue(sheetName, "C1", "Full_name")
+	xlsx.SetCellValue(sheetName, "D1", "Legal_name")
+	xlsx.SetCellValue(sheetName, "E1", "Place_birth")
+	xlsx.SetCellValue(sheetName, "F1", "Date_birth")
+	xlsx.SetCellValue(sheetName, "G1", "Salary")
+	xlsx.SetCellValue(sheetName, "H1", "Foto_ktp")
+	xlsx.SetCellValue(sheetName, "I1", "Foto_selfie")
+	// Create a new sheet.
+	rowIndex := 2
+	for _, data := range konsumens {
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("A%d", rowIndex), data.Email)
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("B%d", rowIndex), data.Nik)
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("C%d", rowIndex), data.Full_name)
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("D%d", rowIndex), data.Legal_name)
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("E%d", rowIndex), data.Place_birth)
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("F%d", rowIndex), data.Date_birth)
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("G%d", rowIndex), data.Salary)
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("H%d", rowIndex), data.Foto_ktp)
+		xlsx.SetCellValue(sheetName, fmt.Sprintf("I%d", rowIndex), data.Foto_selfie)
+
+		rowIndex++
+	}
+
+	filename := "static/excel/" + api.Ctx.Input.Param(":filename") + ".xlsx"
+
+	if err := xlsx.SaveAs(filename); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (api *KonsumensController) CreateKonsumens() {
 	if AllKonsumensCheck(api) != "" {
 		api.Data["json"] = AllKonsumensCheck(api)
@@ -194,7 +291,9 @@ func (api *KonsumensController) CreateKonsumens() {
 
 	retData := CreateKonsumensMessage(api)
 
-	if retData == "success" {
+	retDataEmail := EmailKonsumensMessage(api)
+
+	if retData == "success" && retDataEmail == "success" {
 		api.Data["json"] = "Successfully insert data"
 		api.Ctx.ResponseWriter.WriteHeader(200)
 		api.ServeJSON()

@@ -75,7 +75,7 @@ func GetData() {
 			ul := &structs.GetKonsumen{}
 			json.Unmarshal(d.Body, ul)
 			dateBirth, _ := time.Parse("2006-01-02", ul.Date_birth)
-			Qry := models.Konsumens{Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}
+			Qry := models.Konsumens{Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Email: ul.Email, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}
 			o.Insert(&Qry)
 
 			log.Printf("Received a message: %s", d.Body)

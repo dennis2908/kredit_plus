@@ -7,6 +7,7 @@ import (
 )
 
 type Konsumen struct {
+	Email       string
 	Nik         string
 	Full_name   string
 	Legal_name  string

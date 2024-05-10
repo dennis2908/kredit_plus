@@ -6,10 +6,13 @@ import (
 	"fmt"
 	_ "fmt"
 	models "kredit_plus/models"
+	mongoconn "kredit_plus/mongoconn"
 	"kredit_plus/structs"
 	"log"
 	"strconv"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -33,6 +36,60 @@ func (api *KonsumensController) GetAllKonsumens() {
 	if err == nil && num > 0 {
 		api.Data["json"] = konsumens
 	}
+	api.ServeJSON()
+}
+
+func (api *KonsumensController) GetAllKonsumensMongoInsert() {
+	db, err := mongoconn.Connect()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	var ctx = context.TODO()
+
+	csr, err := db.Collection("konsumens").Find(ctx, bson.M{"content": "mongo insert data konsumen"})
+
+	result := make([]structs.InsertKonsumen, 0)
+	for csr.Next(ctx) {
+		var row structs.InsertKonsumen
+		err := csr.Decode(&row)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		result = append(result, row)
+	}
+	if err == nil {
+		api.Data["json"] = result
+	}
+
+	api.ServeJSON()
+}
+
+func (api *KonsumensController) GetAllKonsumensMongoUpdate() {
+	db, err := mongoconn.Connect()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	var ctx = context.TODO()
+
+	csr, err := db.Collection("konsumens").Find(ctx, bson.M{"content": "mongo update data konsumen"})
+
+	result := make([]structs.InsertKonsumen, 0)
+	for csr.Next(ctx) {
+		var row structs.InsertKonsumen
+		err := csr.Decode(&row)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		result = append(result, row)
+	}
+	if err == nil {
+		api.Data["json"] = result
+	}
+
 	api.ServeJSON()
 }
 

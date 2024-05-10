@@ -7,6 +7,7 @@ require (
 	github.com/aryann/difflib v0.0.0-20170710044230-e206f873d14a // indirect
 	github.com/astaxie/beego v1.12.3
 	github.com/aws/aws-lambda-go v1.13.3 // indirect
+	github.com/beego/beego v1.12.12
 	github.com/beego/beego/v2 v2.2.1
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec // indirect
@@ -32,11 +33,13 @@ require (
 	github.com/pborman/uuid v1.2.0 // indirect
 	github.com/performancecopilot/speed v3.0.0+incompatible // indirect
 	github.com/rabbitmq/amqp091-go v1.9.0
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da // indirect
 	github.com/shopspring/decimal v1.2.0
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271 // indirect
 	github.com/xuri/excelize/v2 v2.8.1 // indirect
 	go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738 // indirect
+	go.mongodb.org/mongo-driver v1.15.0
 	go.uber.org/tools v0.0.0-20190618225709-2cfd321de3ee // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	sourcegraph.com/sourcegraph/appdash v0.0.0-20190731080439-ebfcffb1b5c0 // indirect

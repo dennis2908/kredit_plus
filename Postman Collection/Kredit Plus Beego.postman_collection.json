@@ -29,6 +29,44 @@
 					"response": []
 				},
 				{
+					"name": "Testing Get All Konsumen Mongo Insert",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9333/konsumen_mongo_insert",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9333",
+							"path": [
+								"konsumen_mongo_insert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Testing Get All Konsumen Mongo Update",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9333/konsumen",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9333",
+							"path": [
+								"konsumen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Testing Get Konsumen By ID",
 					"request": {
 						"method": "GET",
@@ -49,13 +87,41 @@
 					"response": []
 				},
 				{
+					"name": "Testing Excel Konsumen",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nik\":\"123123132132\",\r\n    \"Full_name\":\"Dennis Dennis Dennis M\",\r\n    \"Legal_name\": \"Dennis\",\r\n    \"Place_birth\": \"jakarta\",\r\n    \"Date_birth\" : \"1985-09-09\",\r\n    \"Salary\" : 100000000,\r\n    \"Foto_ktp\" : \"dmd.jpg\",\r\n    \"Foto_selfie\" : \"self.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9333/konsumen",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9333",
+							"path": [
+								"konsumen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Testing Create Konsumen",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Nik\":\"123123132132\",\r\n    \"Full_name\":\"Dennis Dennis MMM\",\r\n    \"Legal_name\": \"Dennis\",\r\n    \"Place_birth\": \"jakarta\",\r\n    \"Date_birth\" : \"1985-09-09\",\r\n    \"Salary\" : 100000000,\r\n    \"Foto_ktp\" : \"dmd.jpg\",\r\n    \"Foto_selfie\" : \"self.jpg\"\r\n}",
+							"raw": "{\r\n    \"Nik\":\"123123132132\",\r\n    \"Email\":\"manullang_d@yahoo.com\",\r\n    \"Full_name\":\"Dennis Dennis Dennis M\",\r\n    \"Legal_name\": \"Dennis\",\r\n    \"Place_birth\": \"jakarta\",\r\n    \"Date_birth\" : \"1985-09-09\",\r\n    \"Salary\" : 100000000,\r\n    \"Foto_ktp\" : \"dmd.jpg\",\r\n    \"Foto_selfie\" : \"self.jpg\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -177,7 +243,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Id_konsumen\": 2,\r\n    \"No_kontrak\":\"X129299-a191919\",\r\n    \"Otr\": 5000,\r\n    \"Admin_fee\": 2000000,\r\n    \"Jml_cicilan\" : 1500000000,\r\n    \"Jml_bunga\" : 100000000,\r\n    \"Nama_aset\" : \"mobil daihatsu\"\r\n}",
+							"raw": "{\r\n    \"Id_konsumen\": 1,\r\n    \"No_kontrak\":\"X129299-a191919\",\r\n    \"Otr\": 5000,\r\n    \"Admin_fee\": 2000000,\r\n    \"Jml_cicilan\" : 1500000000,\r\n    \"Jml_bunga\" : 100000000,\r\n    \"Nama_aset\" : \"mobil xenia\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -280,7 +346,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Id_Transaksi\": 2,\r\n    \"Bulan\":2,\r\n    \"Cicilan\": 2000000\r\n}",
+							"raw": "{\r\n    \"Id_Transaksi\": 2,\r\n    \"Bulan\":3,\r\n    \"Cicilan\": 2000000\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

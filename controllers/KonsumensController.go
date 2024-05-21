@@ -10,6 +10,7 @@ import (
 	"kredit_plus/structs"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -138,6 +139,58 @@ func failOnError(err error, msg string) string {
 	} else {
 		return ""
 	}
+}
+
+func InsertKonsumensExcelMessage(modelKonsumen models.Konsumens) string {
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	msg := failOnError(err, "Failed to connect to RabbitMQ")
+	if msg == "Error" {
+		return "Error"
+	}
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"insertExcelKonsumens", // name
+		false,                  // durable
+		false,                  // delete when unused
+		false,                  // exclusive
+		false,                  // no-wait
+		nil,                    // arguments
+	)
+	msg = failOnError(err, "Failed to declare a queue")
+	if msg == "Error" {
+		return "Error"
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	dataSend, err := json.Marshal(modelKonsumen)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	// json.Marshal(Qry)
+	body := "send data"
+	err = ch.PublishWithContext(ctx,
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(dataSend),
+		})
+	msg = failOnError(err, "Failed to publish a message")
+	if msg == "Error" {
+		return "Error"
+	}
+	log.Printf(" [x] Sent %s\n", body)
+
+	return "success"
+
 }
 
 func UpdateKonsumensMessage(api *KonsumensController) string {
@@ -360,6 +413,70 @@ func (api *KonsumensController) CreateKonsumens() {
 
 		api.ServeJSON()
 	}
+}
+
+func excelDateToDate(excelDate string) time.Time {
+	in, _ := strconv.ParseFloat(strings.TrimSpace(excelDate), 64)
+	excelEpoch := time.Date(1899, 12, 30, 0, 0, 0, 0, time.UTC)
+	tm := excelEpoch.Add(time.Duration(in * float64(24*time.Hour)))
+	return tm
+}
+
+func (api *KonsumensController) ReadExcelKonsumens() {
+
+	xlsx, err := excelize.OpenFile("static/excel/" + api.Ctx.Input.Param(":filename") + ".xlsx")
+	if err != nil {
+		log.Fatal("ERROR", err.Error())
+	}
+
+	rowsExcel, _ := xlsx.GetRows("Sheet1")
+
+	rows := make([]models.Konsumens, 0)
+	for i, rowsExcel := range rowsExcel {
+		if i == 0 {
+			// Skip header row
+			continue
+		}
+		rowEmail := rowsExcel[0]
+		rowNik := rowsExcel[1]
+		rowFullName := rowsExcel[2]
+		rowLegalName := rowsExcel[3]
+		rowPlace_birth := rowsExcel[4]
+		// rowDateBirth, _ := xlsx.GetCellValue(sheet1Name, fmt.Sprintf("F%d", i))
+		// rowDateBirthX := excelDateToDate(rowsExcel[5])
+		rowDateBirthX, _ := strconv.ParseFloat(rowsExcel[5], 64)
+		// rowDateBirth := excelDateToDate(rowsExcel[5])
+		rowSalary, _ := strconv.Atoi(rowsExcel[6])
+		rowFotoKTP := rowsExcel[7]
+		rowFotoSelfie := rowsExcel[8]
+		rowDateBirth, _ := time.Parse("2006-01-02", rowsExcel[5])
+
+		log.Printf(" [x] Sent %s\n", rowDateBirthX)
+
+		InsertKonsumensExcelMessage(models.Konsumens{Konsumen: models.Konsumen{Nik: rowNik, Full_name: rowFullName, Email: rowEmail, Legal_name: rowLegalName, Place_birth: rowPlace_birth, Salary: rowSalary, Foto_ktp: rowFotoKTP, Foto_selfie: rowFotoSelfie}, Date_birth: rowDateBirth})
+	}
+
+	fmt.Printf("%v \n", rows)
+	// if AllKonsumensCheck(api) != "" {
+	// 	api.Data["json"] = AllKonsumensCheck(api)
+	// 	api.ServeJSON()
+	// 	return
+	// }
+
+	// retData := CreateKonsumensMessage(api)
+
+	// retDataEmail := EmailKonsumensMessage(api)
+
+	// if retData == "success" && retDataEmail == "success" {
+	// 	api.Data["json"] = "Successfully insert data"
+	// 	api.Ctx.ResponseWriter.WriteHeader(200)
+	// 	api.ServeJSON()
+	// } else {
+	// 	api.Ctx.ResponseWriter.WriteHeader(500)
+	// 	api.Data["json"] = "Error"
+
+	// 	api.ServeJSON()
+	// }
 }
 
 func (api *KonsumensController) UpdateKonsumens() {

@@ -2,18 +2,19 @@ package controllers
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	_ "fmt"
 	models "kredit_plus/models"
 	mongoconn "kredit_plus/mongoconn"
+	redisconn "kredit_plus/redisconn"
 	"kredit_plus/structs"
 	"log"
 	"strconv"
 	"strings"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -23,6 +24,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 	_ "github.com/shopspring/decimal"
 	"github.com/xuri/excelize/v2"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type KonsumensController struct {
@@ -34,6 +36,20 @@ func (api *KonsumensController) GetAllKonsumens() {
 	o.Using("default")
 	var konsumens []models.Konsumens
 	num, err := o.QueryTable("konsumens").All(&konsumens)
+	rdb, _ := redisconn.Connect()
+	urlsJson, _ := json.Marshal(konsumens)
+	token, _ := GenerateRandomString(32)
+
+	ttl := time.Duration(3) * time.Second
+
+	op1 := rdb.Set(context.Background(), token, urlsJson, ttl)
+	if err := op1.Err(); err != nil {
+		fmt.Printf("unable to SET data. error: %v", err)
+		return
+	}
+	op2 := rdb.Get(context.Background(), token)
+	fmt.Printf("data", op2)
+
 	if err == nil && num > 0 {
 		api.Data["json"] = konsumens
 	}
@@ -94,15 +110,44 @@ func (api *KonsumensController) GetAllKonsumensMongoUpdate() {
 	api.ServeJSON()
 }
 
+func GenerateRandomBytes(n int) ([]byte, error) {
+	b := make([]byte, n)
+	_, err := rand.Read(b)
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
+func GenerateRandomString(s int) (string, error) {
+	b, err := GenerateRandomBytes(s)
+	return base64.URLEncoding.EncodeToString(b), err
+}
+
 func (api *KonsumensController) GetKonsumensById() {
 	o := orm.NewOrm()
 	o.Using("default")
+	// ctx := context.Background()
 	var konsumens []models.Konsumens
 	idInt, _ := strconv.Atoi(api.Ctx.Input.Param(":id"))
 	num, err := o.QueryTable("konsumens").Filter("id", idInt).All(&konsumens)
+	rdb, _ := redisconn.Connect()
+	urlsJson, _ := json.Marshal(konsumens)
+	token, _ := GenerateRandomString(32)
+
+	ttl := time.Duration(3) * time.Second
+
+	op1 := rdb.Set(context.Background(), token, urlsJson, ttl)
+	if err := op1.Err(); err != nil {
+		fmt.Printf("unable to SET data. error: %v", err)
+		return
+	}
+	rdb.Get(context.Background(), token)
 	if err == nil && num > 0 {
 		api.Data["json"] = konsumens
 	}
+
 	api.ServeJSON()
 }
 

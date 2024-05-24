@@ -14,6 +14,7 @@ require (
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/go-mail/mail v2.3.1+incompatible // indirect
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
+	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/hashicorp/go.net v0.0.1 // indirect
 	github.com/leekchan/accounting v1.0.0

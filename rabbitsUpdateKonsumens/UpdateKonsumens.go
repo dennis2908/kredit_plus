@@ -16,6 +16,8 @@ import (
 	_ "github.com/lib/pq"
 
 	amqp "github.com/rabbitmq/amqp091-go"
+
+	pusher "kredit_plus/pusherconn"
 )
 
 func init() {
@@ -134,6 +136,9 @@ func GetDataUpdate() {
 				fmt.Println(err.Error())
 			}
 			UpdateKonsumensMongoMessage(strconv.Itoa(ul.Id))
+			client, _ := pusher.Connect()
+
+			client.Trigger("trigger.load", "konsumens", "all.konsumens")
 			log.Printf("Received a message: %s", d.Body)
 		}
 	}()

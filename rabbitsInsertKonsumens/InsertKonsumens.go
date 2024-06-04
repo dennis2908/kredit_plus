@@ -18,6 +18,8 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 
 	models "kredit_plus/models"
+
+	pusher "kredit_plus/pusherconn"
 )
 
 func init() {
@@ -135,6 +137,10 @@ func GetData() {
 			id, _ := o.Insert(&Qry)
 			idStr := strconv.Itoa(int(id))
 			CreateKonsumensMongoMessage(idStr)
+
+			client, _ := pusher.Connect()
+
+			client.Trigger("trigger.load", "konsumens", "all.konsumens")
 
 			log.Printf("Received a message: %s", d.Body)
 		}

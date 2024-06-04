@@ -15,6 +15,9 @@ require (
 	github.com/go-mail/mail v2.3.1+incompatible // indirect
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
+	github.com/gofrs/uuid v4.4.0+incompatible // indirect
+	github.com/googollee/go-socket.io v1.7.0 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/hashicorp/go.net v0.0.1 // indirect
 	github.com/leekchan/accounting v1.0.0
@@ -33,6 +36,7 @@ require (
 	github.com/pact-foundation/pact-go v1.0.4 // indirect
 	github.com/pborman/uuid v1.2.0 // indirect
 	github.com/performancecopilot/speed v3.0.0+incompatible // indirect
+	github.com/pusher/pusher-http-go/v5 v5.1.1 // indirect
 	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da // indirect

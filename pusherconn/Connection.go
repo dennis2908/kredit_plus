@@ -11,13 +11,13 @@ var (
 func Connect() (pusher.Client, error) {
 	pusherClient := pusher.Client{
 
-		AppID: "PUSHER_APP_ID",
+		AppID: "705473",
 
-		Key: "PUSHER_APP_KEY",
+		Key: "b9e4d6190581d989a6e2",
 
-		Secret: "PUSHER_APP_SECRET",
+		Secret: "629f95f4aa4563d80845",
 
-		Cluster: "PUSHER_APP_CLUSTER",
+		Cluster: "ap1",
 
 		Secure: true,
 	}

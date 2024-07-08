@@ -3,6 +3,7 @@ package mongoconn
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,7 +18,7 @@ var (
 func Connect() (*mongo.Database, error) {
 	ctx := context.TODO()
 
-	dbUri := "mongodb://localhost:27017"
+	dbUri := os.Getenv("mongo_url")
 	connectionOpts := options.Client().ApplyURI(dbUri)
 	mongoClient, err := mongo.Connect(ctx, connectionOpts)
 	if err != nil {

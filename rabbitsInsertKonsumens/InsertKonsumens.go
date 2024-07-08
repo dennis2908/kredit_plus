@@ -20,9 +20,12 @@ import (
 	models "kredit_plus/models"
 
 	pusher "kredit_plus/pusherconn"
+
+	"os"
 )
 
 func init() {
+
 	Connection.Connects()
 }
 
@@ -47,7 +50,7 @@ func failOnError(err error, msg string) string {
 }
 
 func CreateKonsumensMongoMessage(idKonsumen string) string {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	msg := failOnError(err, "Failed to connect to RabbitMQ")
 	if msg == "Error" {
 		return "Error"
@@ -93,7 +96,7 @@ func CreateKonsumensMongoMessage(idKonsumen string) string {
 }
 
 func GetData() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

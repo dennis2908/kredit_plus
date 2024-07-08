@@ -20,6 +20,7 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/hashicorp/go.net v0.0.1 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/leekchan/accounting v1.0.0
 	github.com/lib/pq v1.10.5
 	github.com/lightstep/lightstep-tracer-go v0.18.1 // indirect

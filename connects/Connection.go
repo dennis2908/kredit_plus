@@ -4,6 +4,8 @@ import (
 	_ "fmt"
 	_ "kredit_plus/routers"
 
+	loadconf "kredit_plus/LoadConf"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
@@ -11,6 +13,8 @@ import (
 )
 
 func Connects() { // init instead of int
+
+	loadconf.Connects()
 
 	// rabbits.GetData()
 	beego.Debug("Filters init...")

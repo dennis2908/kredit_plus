@@ -9,6 +9,7 @@ import (
 	"kredit_plus/models"
 	_ "kredit_plus/routers"
 	"log"
+	"os"
 	"strconv"
 	"time"
 
@@ -45,7 +46,7 @@ func failOnError(err error, msg string) string {
 }
 
 func UpdateKonsumensMongoMessage(idKonsumen string) string {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	msg := failOnError(err, "Failed to connect to RabbitMQ")
 	if msg == "Error" {
 		return "Error"
@@ -91,7 +92,7 @@ func UpdateKonsumensMongoMessage(idKonsumen string) string {
 }
 
 func GetDataUpdate() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

@@ -62,17 +62,17 @@ func Email(Full_name string, Email string) {
 	if Full_name == "" {
 		Full_name = "Konsumen"
 	}
-	username := "217b4a405ee6bf"
-	password := "06a38497e6b5a3"
-	host := "sandbox.smtp.mailtrap.io"
-	port := "465"
+	username := os.Getenv("SMTP_USERNAME")
+	password := os.Getenv("SMTP_PASSWORD")
+	host := os.Getenv("SMTP_HOST")
+	port := os.Getenv("SMTP_PORT")
 
 	// Subject and body
 	subject := "Good Night, " + Full_name
 	body := "Hi, Good Night " + Full_name
 
 	// Sender and receiver
-	from := "michaeldenniseldima@gmail.com"
+	from := os.Getenv("SMTP_FROM")
 	to := []string{
 		Email,
 	}

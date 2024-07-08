@@ -7,6 +7,7 @@ import (
 	mongoconn "kredit_plus/mongoconn"
 	_ "kredit_plus/routers"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 
@@ -28,7 +29,7 @@ func FailOnError(err error, msg string) {
 }
 
 func GetData() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

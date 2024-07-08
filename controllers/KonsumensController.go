@@ -12,6 +12,7 @@ import (
 	redisconn "kredit_plus/redisconn"
 	"kredit_plus/structs"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -187,7 +188,7 @@ func failOnError(err error, msg string) string {
 }
 
 func InsertKonsumensExcelMessage(modelKonsumen models.Konsumens) string {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	msg := failOnError(err, "Failed to connect to RabbitMQ")
 	if msg == "Error" {
 		return "Error"
@@ -239,7 +240,7 @@ func InsertKonsumensExcelMessage(modelKonsumen models.Konsumens) string {
 }
 
 func UpdateKonsumensMessage(api *KonsumensController) string {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	msg := failOnError(err, "Failed to connect to RabbitMQ")
 	if msg == "Error" {
 		return "Error"
@@ -297,7 +298,7 @@ func UpdateKonsumensMessage(api *KonsumensController) string {
 }
 
 func CreateKonsumensMessage(api *KonsumensController) string {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	msg := failOnError(err, "Failed to connect to RabbitMQ")
 	if msg == "Error" {
 		return "Error"
@@ -344,7 +345,7 @@ func CreateKonsumensMessage(api *KonsumensController) string {
 }
 
 func EmailKonsumensMessage(api *KonsumensController) string {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	msg := failOnError(err, "Failed to connect to RabbitMQ")
 	if msg == "Error" {
 		return "Error"

@@ -8,6 +8,7 @@ import (
 	_ "kredit_plus/routers"
 	"log"
 	"net/smtp"
+	"os"
 
 	"github.com/astaxie/beego/orm"
 	_ "github.com/lib/pq"
@@ -76,10 +77,10 @@ func GetData() {
 			json.Unmarshal(d.Body, ul)
 
 			// SMTP configuration
-			username := "217b4a405ee6bf"
-			password := "06a38497e6b5a3"
-			host := "sandbox.smtp.mailtrap.io"
-			port := "465"
+			username := os.Getenv("SMTP_USERNAME")
+			password := os.Getenv("SMTP_PASSWORD")
+			host := os.Getenv("SMTP_HOST")
+			port := os.Getenv("SMTP_PORT")
 
 			// Subject and body
 			subject := "Welcome, " + ul.Full_name

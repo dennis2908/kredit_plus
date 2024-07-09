@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	_ "fmt"
+	loadconf "kredit_plus/LoadConf"
 	mongoconn "kredit_plus/mongoconn"
 	_ "kredit_plus/routers"
 	"log"
@@ -17,6 +18,8 @@ import (
 )
 
 func main() {
+
+	loadconf.Connects()
 
 	GetData()
 

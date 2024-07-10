@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	_ "fmt"
 	Connection "kredit_plus/connects"
+
+	celery "kredit_plus/celery"
 	_ "kredit_plus/routers"
 	"log"
 	"strconv"
@@ -95,6 +97,20 @@ func CreateKonsumensMongoMessage(idKonsumen string) string {
 
 }
 
+func saveData(data []byte) string {
+	o := orm.NewOrm()
+	o.Using("default")
+
+	ul := &structs.GetKonsumen{}
+	json.Unmarshal(data, ul)
+	dateBirth, _ := time.Parse("2006-01-02", ul.Date_birth)
+	Qry := models.Konsumens{Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Email: ul.Email, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}
+	id, _ := o.Insert(&Qry)
+	idStr := strconv.Itoa(int(id))
+	CreateKonsumensMongoMessage(idStr)
+	return "success"
+}
+
 func GetData() {
 	conn, err := amqp.Dial(os.Getenv("rabbit_url"))
 	FailOnError(err, "Failed to connect to RabbitMQ")
@@ -130,16 +146,18 @@ func GetData() {
 	go func() {
 
 		for d := range msgs {
-			o := orm.NewOrm()
-			o.Using("default")
 
-			ul := &structs.GetKonsumen{}
-			json.Unmarshal(d.Body, ul)
-			dateBirth, _ := time.Parse("2006-01-02", ul.Date_birth)
-			Qry := models.Konsumens{Konsumen: models.Konsumen{Nik: ul.Nik, Full_name: ul.Full_name, Email: ul.Email, Legal_name: ul.Legal_name, Place_birth: ul.Place_birth, Salary: ul.Salary, Foto_ktp: ul.Foto_ktp, Foto_selfie: ul.Foto_selfie}, Date_birth: dateBirth}
-			id, _ := o.Insert(&Qry)
-			idStr := strconv.Itoa(int(id))
-			CreateKonsumensMongoMessage(idStr)
+			saveData := saveData(d.Body)
+
+			cli, _ := celery.Connect()
+
+			cli.Register("save.data.customers", saveData)
+
+			// start workers (non-blocking call)
+			cli.StartWorker()
+
+			// wait for client request
+			time.Sleep(4 * time.Second)
 
 			client, _ := pusher.Connect()
 

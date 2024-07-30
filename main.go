@@ -37,7 +37,12 @@ func main() {
 		wg.Add(1)
 		_, err := cache.NewCache("file", `{"CachePath":"./cache","FileSuffix":".cache", "EmbedExpiry": "120"}`)
 
-		beego.InsertFilter("/konsumen", beego.BeforeExec, token.ValidateToken)
+		beego.InsertFilter("/konsumen/*", beego.BeforeExec, token.ValidateToken)
+		beego.InsertFilter("/transaksi/*", beego.BeforeExec, token.ValidateToken)
+		beego.InsertFilter("/transaksidetails/*", beego.BeforeExec, token.ValidateToken)
+		beego.InsertFilter("/konsumen_mongo_insert/*", beego.BeforeExec, token.ValidateToken)
+		beego.InsertFilter("/konsumen_mongo_update/*", beego.BeforeExec, token.ValidateToken)
+		beego.InsertFilter("/konsumen_excel_read/*", beego.BeforeExec, token.ValidateToken)
 
 		orm.Debug = true
 

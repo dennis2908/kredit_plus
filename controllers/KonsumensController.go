@@ -17,6 +17,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/beego/beego/v2/core/logs"
@@ -27,6 +29,8 @@ import (
 	"github.com/xuri/excelize/v2"
 	"go.mongodb.org/mongo-driver/bson"
 )
+
+var secretKey = []byte("secret-key")
 
 type KonsumensController struct {
 	beego.Controller
@@ -79,6 +83,26 @@ func (api *KonsumensController) GetAllKonsumensMongoInsert() {
 	}
 	if err == nil {
 		api.Data["json"] = result
+	}
+
+	api.ServeJSON()
+}
+
+func (api *KonsumensController) GetToken() {
+	login := &models.Login{}
+	json.Unmarshal(api.Ctx.Input.RequestBody, login)
+
+	fmt.Println(1111, login.Username)
+	fmt.Println(2222, login.Password)
+
+	api.Data["json"] = "wrong username or password"
+	if login.Username == "admin" && login.Password == "mypassword" {
+		tokenString := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"username": login.Username,
+			"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		})
+		token, _ := tokenString.SignedString(secretKey)
+		api.Data["json"] = "{'tokenString': '" + token + "'}"
 	}
 
 	api.ServeJSON()

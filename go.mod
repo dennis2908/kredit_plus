@@ -24,6 +24,7 @@ require (
 	github.com/couchbase/gomemcached v0.1.3 // indirect
 	github.com/couchbase/goutils v0.1.0 // indirect
 	github.com/cupcake/rdb v0.0.0-20161107195141-43ba34106c76 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/elastic/go-elasticsearch/v6 v6.8.10 // indirect
 	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
 	github.com/glendc/gopher-json v0.0.0-20170414221815-dc4743023d0c // indirect
@@ -35,11 +36,13 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/gocelery/gocelery v0.0.0-20201111034804-825d89059344
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/googollee/go-socket.io v1.7.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/hashicorp/go.net v0.0.1 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/juusechec/jwt-beego v0.0.0-20180206200454-c8c7c4585066 // indirect
 	github.com/leekchan/accounting v1.0.0
 	github.com/lib/pq v1.10.5
 	github.com/lightstep/lightstep-tracer-go v0.18.1 // indirect

@@ -6,6 +6,11 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+type Login struct {
+	Username string
+	Password string
+}
+
 type Konsumen struct {
 	Email       string
 	Nik         string

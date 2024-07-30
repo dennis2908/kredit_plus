@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	models "kredit_plus/models"
-	"kredit_plus/structs"
 	_ "context"
 	"encoding/json"
 	_ "fmt"
+	models "kredit_plus/models"
+	"kredit_plus/structs"
 	"strconv"
 
 	"github.com/astaxie/beego"
@@ -25,11 +25,10 @@ type merged struct {
 	models.Transaksis
 }
 
-
 func (api *TransaksisController) GetAllTransaksis() {
 	o := orm.NewOrm()
 	o.Using("default")
-	
+
 	var Transaksis []structs.GetAllTransaksi
 	sql := "Select transaksis.*,konsumens.*,transaksis.id_konsumen as konsumen_id, transaksis.id as Id_transaksi FROM konsumens join transaksis on transaksis.id_konsumen = konsumens.id"
 	num, err := o.Raw(sql).QueryRows(&Transaksis)
@@ -42,12 +41,12 @@ func (api *TransaksisController) GetAllTransaksis() {
 func (api *TransaksisController) GetTransaksiByIdKons() {
 	o := orm.NewOrm()
 	o.Using("default")
-	
+
 	var Transaksis []structs.GetAllTransaksi
 	idInt, _ := strconv.Atoi(api.Ctx.Input.Param(":id"))
 	sql := "Select transaksis.*,konsumens.*,transaksis.id_konsumen as konsumen_id, transaksis.id as Id_transaksi FROM konsumens join transaksis on transaksis.id_konsumen = konsumens.id"
 	sql += " where konsumens.id = ?"
-	num, err := o.Raw(sql,idInt).QueryRows(&Transaksis)
+	num, err := o.Raw(sql, idInt).QueryRows(&Transaksis)
 	if err == nil && num > 0 {
 		api.Data["json"] = Transaksis
 	}
@@ -59,9 +58,9 @@ func (api *TransaksisController) GetTransaksisById() {
 	o.Using("default")
 	var Transaksis []models.Transaksis
 	idInt, _ := strconv.Atoi(api.Ctx.Input.Param(":id"))
-	num, err := o.QueryTable("Transaksis").Filter("id",idInt).All(&Transaksis)
+	num, err := o.QueryTable("Transaksis").Filter("id", idInt).All(&Transaksis)
 	if err == nil && num > 0 {
-		api.Data["json"] = Transaksis	
+		api.Data["json"] = Transaksis
 	}
 	api.ServeJSON()
 }
@@ -105,7 +104,7 @@ func (api *TransaksisController) CreateTransaksis() {
 
 	ul := &models.Transaksis{}
 	json.Unmarshal(frm, ul)
-	Qry := models.Transaksis{Transaksi:models.Transaksi{Id_konsumen:ul.Id_konsumen,No_kontrak:ul.No_kontrak,Otr:ul.Otr,Admin_fee:ul.Admin_fee,Jml_cicilan:ul.Jml_cicilan,Jml_bunga:ul.Jml_bunga,Nama_aset:ul.Nama_aset}}
+	Qry := models.Transaksis{Transaksi: models.Transaksi{Id_konsumen: ul.Id_konsumen, No_kontrak: ul.No_kontrak, Otr: ul.Otr, Admin_fee: ul.Admin_fee, Jml_cicilan: ul.Jml_cicilan, Jml_bunga: ul.Jml_bunga, Nama_aset: ul.Nama_aset}}
 	o.Insert(&Qry)
 	api.Data["json"] = "Successfully save data"
 	api.ServeJSON()
@@ -126,9 +125,9 @@ func (api *TransaksisController) UpdateTransaksis() {
 
 	ul := &models.Transaksis{}
 	json.Unmarshal(frm, ul)
-	Qry := models.Transaksis{Id:idInt,Transaksi:models.Transaksi{Id_konsumen:ul.Id_konsumen,No_kontrak:ul.No_kontrak,Otr:ul.Otr,Admin_fee:ul.Admin_fee,Jml_cicilan:ul.Jml_cicilan,Jml_bunga:ul.Jml_bunga,Nama_aset:ul.Nama_aset}}
+	Qry := models.Transaksis{Id: idInt, Transaksi: models.Transaksi{Id_konsumen: ul.Id_konsumen, No_kontrak: ul.No_kontrak, Otr: ul.Otr, Admin_fee: ul.Admin_fee, Jml_cicilan: ul.Jml_cicilan, Jml_bunga: ul.Jml_bunga, Nama_aset: ul.Nama_aset}}
 	o.Update(&Qry)
 	api.Data["json"] = "Successfully update data with id  =  " + api.Ctx.Input.Param(":id")
-	
+
 	api.ServeJSON()
 }

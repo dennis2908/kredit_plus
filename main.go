@@ -5,6 +5,7 @@ import (
 	Connection "kredit_plus/connects"
 	_ "kredit_plus/routers"
 	"kredit_plus/ssrf"
+	"kredit_plus/token"
 	"log"
 	"os"
 	"runtime"
@@ -35,6 +36,8 @@ func main() {
 	for i := 0; i < numberOfCores; i++ {
 		wg.Add(1)
 		_, err := cache.NewCache("file", `{"CachePath":"./cache","FileSuffix":".cache", "EmbedExpiry": "120"}`)
+
+		beego.InsertFilter("/konsumen", beego.BeforeExec, token.ValidateToken)
 
 		orm.Debug = true
 

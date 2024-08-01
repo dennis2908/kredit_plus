@@ -8,5 +8,6 @@ import (
 
 func init() {
 	beego.Router("/login", &controllers.KonsumensController{}, "post:GetToken")
+	beego.Router("/refresh/token", &controllers.KonsumensController{}, "post:GetRefreshToken")
 
 }

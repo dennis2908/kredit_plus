@@ -2,6 +2,7 @@ package token
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/astaxie/beego/context"
 
@@ -10,12 +11,10 @@ import (
 	"strings"
 )
 
-var secretKey = []byte("secret-key")
-
 // JwtAuth 中间件，检查token
 func verifyToken(tokenString string) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		return []byte(os.Getenv("token_secret_key")), nil
 	})
 
 	if err != nil {

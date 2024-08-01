@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"context"
+	"crypto/hmac"
 	"crypto/rand"
+	"crypto/sha1"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -29,8 +31,6 @@ import (
 	"github.com/xuri/excelize/v2"
 	"go.mongodb.org/mongo-driver/bson"
 )
-
-var secretKey = []byte("secret-key")
 
 type KonsumensController struct {
 	beego.Controller
@@ -88,6 +88,61 @@ func (api *KonsumensController) GetAllKonsumensMongoInsert() {
 	api.ServeJSON()
 }
 
+func (api *KonsumensController) GetRefreshToken() {
+	val := api.Ctx.GetCookie("token")
+
+	var strErr = "refresh token not available"
+	if val == "" {
+		api.Data["json"] = strErr
+	} else {
+
+		parts := strings.SplitN(val, "|", 3)
+
+		if len(parts) != 3 {
+			api.Data["json"] = strErr
+		} else {
+
+			vs := parts[0]
+			timestamp := parts[1]
+			sig := parts[2]
+
+			h := hmac.New(sha1.New, []byte(os.Getenv(("cookie_secret_key"))))
+			fmt.Fprintf(h, "%s%s", vs, timestamp)
+
+			if fmt.Sprintf("%02x", h.Sum(nil)) != sig {
+				api.Data["json"] = strErr
+			} else {
+
+				res, _ := base64.URLEncoding.DecodeString(vs)
+
+				token, err := jwt.Parse(string(res), func(token *jwt.Token) (interface{}, error) {
+					return []byte(os.Getenv("token_refresh_key")), nil
+				})
+
+				if err != nil {
+					api.Data["json"] = strErr
+				}
+
+				if !token.Valid {
+					api.Data["json"] = strErr
+				}
+
+				if err == nil {
+
+					tokenString := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+						"exp": time.Now().Add(time.Hour * 24).Unix(),
+					})
+					token, _ := tokenString.SignedString([]byte(os.Getenv("token_secret_key")))
+
+					api.Data["json"] = "{'your new token key': '" + token + "'}"
+				}
+			}
+		}
+	}
+
+	api.ServeJSON()
+}
+
 func (api *KonsumensController) GetToken() {
 	login := &models.Login{}
 	json.Unmarshal(api.Ctx.Input.RequestBody, login)
@@ -98,10 +153,23 @@ func (api *KonsumensController) GetToken() {
 	api.Data["json"] = "wrong username or password"
 	if login.Username == "admin" && login.Password == "mypassword" {
 		tokenString := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"username": login.Username,
-			"exp":      time.Now().Add(time.Hour * 24).Unix(),
+			"exp": time.Now().Add(time.Hour * 24).Unix(),
 		})
-		token, _ := tokenString.SignedString(secretKey)
+		token, _ := tokenString.SignedString([]byte(os.Getenv("token_secret_key")))
+
+		tokenRefesh, _ := tokenString.SignedString([]byte(os.Getenv("token_refresh_key")))
+
+		vs := base64.URLEncoding.EncodeToString([]byte(tokenRefesh))
+		timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
+		h := hmac.New(sha1.New, []byte(os.Getenv(("cookie_secret_key"))))
+		fmt.Fprintf(h, "%s%s", vs, timestamp)
+		fmt.Println(tokenRefesh)
+		fmt.Printf("mystr:\t %v \n", []byte(os.Getenv("token_secret_key")))
+		fmt.Printf("mystr:\t %v \n", []byte(os.Getenv("token_refresh_key")))
+		sig := fmt.Sprintf("%02x", h.Sum(nil))
+		cookie := strings.Join([]string{vs, timestamp, sig}, "|")
+
+		api.Ctx.SetCookie("token", cookie, time.Now().Add(time.Hour*24).Unix(), "/")
 		api.Data["json"] = "{'tokenString': '" + token + "'}"
 	}
 

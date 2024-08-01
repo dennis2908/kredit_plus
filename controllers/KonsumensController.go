@@ -162,10 +162,6 @@ func (api *KonsumensController) GetToken() {
 		vs := base64.URLEncoding.EncodeToString([]byte(tokenRefesh))
 		timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
 		h := hmac.New(sha1.New, []byte(os.Getenv(("cookie_secret_key"))))
-		fmt.Fprintf(h, "%s%s", vs, timestamp)
-		fmt.Println(tokenRefesh)
-		fmt.Printf("mystr:\t %v \n", []byte(os.Getenv("token_secret_key")))
-		fmt.Printf("mystr:\t %v \n", []byte(os.Getenv("token_refresh_key")))
 		sig := fmt.Sprintf("%02x", h.Sum(nil))
 		cookie := strings.Join([]string{vs, timestamp, sig}, "|")
 

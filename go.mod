@@ -54,6 +54,7 @@ require (
 	github.com/nats-io/jwt v0.3.2 // indirect
 	github.com/oklog/oklog v0.3.2 // indirect
 	github.com/oklog/run v1.0.0 // indirect
+	github.com/olivere/elastic/v7 v7.0.32
 	github.com/onsi/ginkgo/v2 v2.13.2
 	github.com/onsi/gomega v1.29.0
 	github.com/opentracing/basictracer-go v1.0.0 // indirect

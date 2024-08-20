@@ -3,6 +3,8 @@ package main
 import (
 	_ "fmt"
 	Connection "kredit_plus/connects"
+
+	Elastic "kredit_plus/elastic"
 	_ "kredit_plus/routers"
 	"kredit_plus/ssrf"
 	"kredit_plus/token"
@@ -22,6 +24,7 @@ import (
 func init() { // init instead of int
 
 	Connection.Connects()
+	Elastic.Connect()
 }
 func main() {
 	err := ssrf.Main()

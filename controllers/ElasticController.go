@@ -65,6 +65,36 @@ func (api *ElasticController) ElasticInsert() {
 	api.ServeJSON()
 }
 
+func (api *ElasticController) InsertData() {
+	frm := api.Ctx.Input.RequestBody
+	ul := &models.InsertEnv{}
+	json.Unmarshal(frm, ul)
+
+	_, err := elastic.SearchDataQuery(ul.Name, ul.App)
+
+	if err == nil {
+
+		api.Ctx.ResponseWriter.WriteHeader(400)
+		api.Ctx.ResponseWriter.Write([]byte("data exists"))
+		return
+	}
+
+	id := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+
+	if elastic.InsertDataQueryGeneral(id, ul.Name, ul.App, ul.Framework) {
+		id2 := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+		if elastic.InsertDataQueryDesc(id, id2, ul.Env, ul.Lang) {
+			api.Data["json"] = "Successfully save data"
+			api.ServeJSON()
+			return
+		}
+	}
+
+	api.Ctx.ResponseWriter.WriteHeader(503)
+	api.Ctx.ResponseWriter.Write([]byte("data not saved"))
+
+}
+
 func (api *ElasticController) ElasticSearch() {
 
 	keyword := api.GetString("search")

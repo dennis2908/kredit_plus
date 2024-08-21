@@ -33,7 +33,6 @@ func SearchData(keyword string) ([]models.Env, error) {
 
 	searchResult, err := searchService.Do(context.Background())
 	if err != nil {
-		fmt.Println("Error", err)
 		return []models.Env{}, err
 	}
 
@@ -92,6 +91,74 @@ func SearchDataQuery(name string, app string) (structs.SearchHits, error) {
 	}
 
 	return t, nil
+
+}
+
+func InsertDataQueryGeneral(id string, name string, app string, framework string) bool {
+	query := fmt.Sprintf(`
+	{
+		"id": "%s",
+		"name": "%s",
+		"app": "%s",
+		"framework" : "%s",
+		"join": {
+			"name": "general" 
+		}
+	}
+
+	`, id, name, app, framework)
+
+	url := "http://127.0.0.1:9200/multiple-env/_doc/" + id + "?refresh"
+
+	req, err := http.NewRequest(http.MethodPut, url,
+		bytes.NewBuffer([]byte(query)))
+	if err != nil {
+		return false
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, errx := client.Do(req)
+
+	if errx != nil {
+		return false
+	}
+
+	defer resp.Body.Close()
+
+	return true
+
+}
+
+func InsertDataQueryDesc(id1 string, id2 string, env string, lang string) bool {
+	query := fmt.Sprintf(`
+	{
+		"id": "%s",
+		"env" : "%s",
+		"lang" : "%s",
+		"join": {
+			"name": "description",
+			"parent": "%s"
+		}
+	}
+
+
+	`, id2, env, lang, id1)
+
+	url := "http://localhost:9200/multiple-env/_doc/" + id2 + "?routing=" + id1 + "&refresh"
+
+	fmt.Println("1", url)
+
+	req, err := http.Post(url, "application/json",
+		bytes.NewBufferString(query))
+	if err != nil {
+		return false
+	}
+
+	_, errx := io.ReadAll(req.Body)
+
+	return errx == nil
 
 }
 

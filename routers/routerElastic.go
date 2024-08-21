@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	beego.Router("/elastic", &controllers.ElasticController{}, "post:ElasticInsert")
+	beego.Router("/elastic", &controllers.ElasticController{}, "post:InsertData")
 	beego.Router("/elastic", &controllers.ElasticController{}, "get:SearchData")
 	beego.Router("/elastic/all", &controllers.ElasticController{}, "get:ElasticGetAllData")
 	beego.Router("/elastic/:id", &controllers.ElasticController{}, "delete:ElasticDelete")

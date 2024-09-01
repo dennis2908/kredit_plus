@@ -64,7 +64,7 @@ require (
 	github.com/pelletier/go-toml v1.9.2 // indirect
 	github.com/performancecopilot/speed v3.0.0+incompatible // indirect
 	github.com/peterh/liner v1.0.1-0.20171122030339-3681c2a91233 // indirect
-	github.com/prometheus/client_golang v1.19.0 // indirect
+	github.com/prometheus/client_golang v1.20.2 // indirect
 	github.com/pusher/pusher-http-go/v5 v5.1.1 // indirect
 	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/redis/go-redis/v9 v9.5.1 // indirect

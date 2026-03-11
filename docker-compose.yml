@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  beegokreditplus:
+    container_name: beegokreditplus
+    image: beegokreditplus/dm:1.0
+    build: .
+    ports:
+      - "9333:9333"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=netwkreditPlus;Database=kredit_plus;Username=postgres;Password=postgres;"
+    depends_on:
+      netwkreditPlus:
+        condition: service_healthy  
+  netwkreditPlus:
+    container_name: netwkreditPlus
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: kredit_plus
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5    
+    volumes:
+      - pgdatakreditplus:/var/lib/postgresql/data
+volumes:
+  pgdatakreditplus: {}

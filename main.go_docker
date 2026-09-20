@@ -36,7 +36,7 @@ func init() { // init instead of int
 	orm.RegisterDriver("postgres", orm.DRPostgres)
 	orm.RegisterDataBase("default",
 		"postgres",
-		"user=postgres password=postgres host=netwkreditPlus port=5432 dbname=kredit_plus sslmode=disable")
+		"user=postgres password=123456 host=127.0.0.1 port=5432 dbname=kredit_plus sslmode=disable")
 	orm.RunSyncdb("default", false, true)
 	orm.RunCommand()
 }

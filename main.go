@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "fmt"
-	Connection "kredit_plus/connects"
 	_ "kredit_plus/routers"
 	"kredit_plus/ssrf"
 	"log"
@@ -13,14 +12,33 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/plugins/cors"
 	"github.com/beego/beego/v2/client/cache"
 	"github.com/beego/beego/v2/core/logs"
 	_ "github.com/lib/pq"
 )
 
 func init() { // init instead of int
+	beego.Debug("Filters init...")
 
-	Connection.Connects()
+	// CORS for https://foo.* origins, allowing:
+	// - PUT and PATCH methods
+	// - Origin header
+	// - Credentials share
+
+	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin"},
+		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin"},
+		AllowCredentials: true,
+	}))
+	orm.RegisterDriver("postgres", orm.DRPostgres)
+	orm.RegisterDataBase("default",
+		"postgres",
+		"user=postgres password=123456 host=127.0.0.1 port=5432 dbname=kredit_plus sslmode=disable")
+	orm.RunSyncdb("default", false, true)
+	orm.RunCommand()
 }
 func main() {
 	err := ssrf.Main()
@@ -28,7 +46,6 @@ func main() {
 		log.Println(err)
 		return
 	}
-
 	numberOfCores := runtime.NumCPU()
 	runtime.GOMAXPROCS(numberOfCores)
 	var wg sync.WaitGroup

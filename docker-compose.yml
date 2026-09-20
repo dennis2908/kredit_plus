@@ -9,9 +9,23 @@ services:
       - "9333:9333"
     environment:
       ConnectionStrings__DefaultConnection: "Host=netwkreditPlus;Database=kredit_plus;Username=postgres;Password=postgres;"
+      RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"
     depends_on:
       netwkreditPlus:
         condition: service_healthy  
+      rabbitmq:
+        condition: service_healthy
+  rabbitmq:
+    container_name: kreditplus-rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   netwkreditPlus:
     container_name: netwkreditPlus
     image: postgres:12

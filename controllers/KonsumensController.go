@@ -8,6 +8,7 @@ import (
 	models "kredit_plus/models"
 	"kredit_plus/structs"
 	"log"
+	"os"
 	"strconv"
 	"time"
 
@@ -80,8 +81,16 @@ func failOnError(err error, msg string) string {
 	}
 }
 
+func rabbitMQURL() string {
+	url := os.Getenv("RABBITMQ_URL")
+	if url == "" {
+		return "amqp://guest:guest@localhost:5672/"
+	}
+	return url
+}
+
 func UpdateKonsumensMessage(api *KonsumensController) string {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(rabbitMQURL())
 	msg := failOnError(err, "Failed to connect to RabbitMQ")
 	if msg == "Error" {
 		return "Error"
@@ -139,10 +148,10 @@ func UpdateKonsumensMessage(api *KonsumensController) string {
 }
 
 func CreateKonsumensMessage(api *KonsumensController) string {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(rabbitMQURL())
 	msg := failOnError(err, "Failed to connect to RabbitMQ")
 	if msg == "Error" {
-		return "Error"
+		return "Failed to connect to RabbitMQ"
 	}
 	defer conn.Close()
 
@@ -160,7 +169,7 @@ func CreateKonsumensMessage(api *KonsumensController) string {
 	)
 	msg = failOnError(err, "Failed to declare a queue")
 	if msg == "Error" {
-		return "Error"
+		return "Failed to declare a queue"
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -177,7 +186,7 @@ func CreateKonsumensMessage(api *KonsumensController) string {
 		})
 	msg = failOnError(err, "Failed to publish a message")
 	if msg == "Error" {
-		return "Error"
+		return "Failed to publish a message"
 	}
 	log.Printf(" [x] Sent %s\n", body)
 
@@ -198,12 +207,12 @@ func (api *KonsumensController) CreateKonsumens() {
 		api.Data["json"] = "Successfully insert data"
 		api.Ctx.ResponseWriter.WriteHeader(200)
 		api.ServeJSON()
-	} else {
-		api.Ctx.ResponseWriter.WriteHeader(500)
-		api.Data["json"] = "Error"
-
-		api.ServeJSON()
 	}
+
+	// api.Ctx.ResponseWriter.WriteHeader(500)
+	// 	api.Data["json"] = "Error"
+
+	// 	api.ServeJSON()
 }
 
 func (api *KonsumensController) UpdateKonsumens() {

@@ -8,6 +8,7 @@ import (
 	"kredit_plus/models"
 	_ "kredit_plus/routers"
 	"log"
+	"os"
 
 	"github.com/astaxie/beego/orm"
 	_ "github.com/lib/pq"
@@ -32,7 +33,11 @@ func FailOnError(err error, msg string) {
 }
 
 func GetDataUpdate() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	rabbitMQURL := os.Getenv("RABBITMQ_URL")
+	if rabbitMQURL == "" {
+		rabbitMQURL = "amqp://guest:guest@localhost:5672/"
+	}
+	conn, err := amqp.Dial(rabbitMQURL)
 	FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

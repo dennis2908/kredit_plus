@@ -84,7 +84,7 @@ func failOnError(err error, msg string) string {
 func rabbitMQURL() string {
 	url := os.Getenv("RABBITMQ_URL")
 	if url == "" {
-		return "amqp://guest:guest@127.0.0.1:5672/"
+		return "amqp://guest:guest@localhost:5672/"
 	}
 	return url
 }

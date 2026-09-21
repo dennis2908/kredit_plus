@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "fmt"
+	"kredit_plus/controllers"
 	_ "kredit_plus/routers"
 	"kredit_plus/ssrf"
 	"log"
@@ -33,6 +34,7 @@ func init() { // init instead of int
 		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin"},
 		AllowCredentials: true,
 	}))
+	beego.InsertFilter("*", beego.BeforeRouter, controllers.RequireAuthentication)
 	orm.RegisterDriver("postgres", orm.DRPostgres)
 	orm.RegisterDataBase("default",
 		"postgres",

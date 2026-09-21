@@ -1,0 +1,240 @@
+package controllers
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	_ "fmt"
+	"kredit_plus/elastic"
+	models "kredit_plus/models"
+	"kredit_plus/structs"
+	"kredit_plus/types"
+	"time"
+
+	"strconv"
+
+	"github.com/astaxie/beego"
+	_ "github.com/beego/beego/v2/core/logs"
+	_ "github.com/leekchan/accounting"
+	_ "github.com/shopspring/decimal"
+)
+
+type ElasticController struct {
+	beego.Controller
+}
+
+type Args struct{}
+
+func (api *ElasticController) ElasticInsert() {
+	frm := api.Ctx.Input.RequestBody
+	ul := &models.Env{}
+	json.Unmarshal(frm, ul)
+
+	data, err := elastic.SearchData(ul.Name)
+
+	if err != nil {
+
+		api.Ctx.ResponseWriter.WriteHeader(400)
+		api.Ctx.ResponseWriter.Write([]byte("error fetch data"))
+		return
+	}
+
+	fmt.Println(111, len(data))
+
+	if len(data) > 0 {
+		api.Ctx.ResponseWriter.WriteHeader(503)
+		api.Ctx.ResponseWriter.Write([]byte("data exists"))
+		return
+	}
+	id := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+	Qry := models.Env{Name: ul.Name, Env_name: ul.Env_name, Id: id}
+	dataJSON, _ := json.Marshal(Qry)
+	js := string(dataJSON)
+	ctx := context.Background()
+	esclient, err := elastic.Connect()
+	if err != nil {
+		fmt.Println("Error initializing : ", err)
+		panic("Client fail ")
+	}
+
+	_, err_ind := esclient.Index().Id(id).Index("env").
+		BodyJson(js).
+		Do(ctx)
+
+	if err_ind != nil {
+		panic(err_ind)
+	}
+
+	api.Data["json"] = "Successfully save data"
+	api.ServeJSON()
+}
+
+func (api *ElasticController) InsertData() {
+	frm := api.Ctx.Input.RequestBody
+	ul := &models.InsertEnv{}
+	json.Unmarshal(frm, ul)
+
+	_, err := elastic.SearchDataQuery(ul.Name, ul.App)
+
+	if err == nil {
+
+		api.Ctx.ResponseWriter.WriteHeader(400)
+		api.Ctx.ResponseWriter.Write([]byte("data exists"))
+		return
+	}
+
+	id := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+
+	if elastic.InsertDataQueryGeneral(id, ul.Name, ul.App, ul.Framework) {
+		id2 := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+		if elastic.InsertDataQueryDesc(id, id2, ul.Env, ul.Lang) {
+			api.Data["json"] = "Successfully save data"
+			api.ServeJSON()
+			return
+		}
+	}
+
+	api.Ctx.ResponseWriter.WriteHeader(503)
+	api.Ctx.ResponseWriter.Write([]byte("data not saved"))
+
+}
+
+func (api *ElasticController) ElasticSearch() {
+
+	keyword := api.GetString("search")
+
+	data, err := elastic.SearchData(keyword)
+
+	if err != nil {
+
+		api.Ctx.ResponseWriter.WriteHeader(400)
+		api.Ctx.ResponseWriter.Write([]byte("error search data"))
+		return
+	}
+
+	if len(data) == 0 {
+		api.Ctx.ResponseWriter.WriteHeader(503)
+		api.Ctx.ResponseWriter.Write([]byte("data not found"))
+		return
+	}
+
+	api.Ctx.Output.SetStatus(200)
+	api.Data["json"] = data
+	api.ServeJSON()
+
+	// if err != nil {
+	// 	fmt.Println("Fetching datas fail: ", err)
+	// } else {
+	// 	for _, s := range datas {
+	// 		fmt.Printf("Datas found Name: %s, Env Name: %d \n", s.Name, s.Env_name)
+	// 	}
+	// }
+
+}
+
+func (api *ElasticController) SearchData() {
+
+	var reply structs.SearchHits
+
+	elastic := types.Elastic{}
+	client, err := elastic.FuncElastic()
+	if err != nil {
+		fmt.Println("Client connection error: ", err)
+	}
+
+	var k structs.SearchDataStr
+
+	k.Name = api.GetString("name")
+	k.App = api.GetString("app")
+
+	err = client.Call("ElasticServer.SearchDataQuery", k, &reply)
+
+	retAPI := RetAPIController{}
+	depRetAPI := RetAPI{depRetAPI: retAPI}
+	if err != nil {
+		go depRetAPI.depRetAPI.RetError(api, 503, "data not found")
+		return
+	}
+	go depRetAPI.depRetAPI.RetAPIElasticGet(api, reply)
+
+}
+
+func (api *ElasticController) ElasticDelete() {
+
+	id := api.Ctx.Input.Param(":id")
+
+	fmt.Println(12212, id)
+
+	esclient, _ := elastic.Connect()
+
+	_, err := esclient.Delete().Index("env").Id(id).Refresh("true").Do(context.Background())
+
+	if err != nil {
+
+		api.Ctx.ResponseWriter.WriteHeader(400)
+		api.Ctx.ResponseWriter.Write([]byte("error delete data"))
+		return
+	}
+
+	api.Ctx.Output.SetStatus(200)
+	api.Data["json"] = "data had been delete"
+	api.ServeJSON()
+
+	// if err != nil {
+	// 	fmt.Println("Fetching datas fail: ", err)
+	// } else {
+	// 	for _, s := range datas {
+	// 		fmt.Printf("Datas found Name: %s, Env Name: %d \n", s.Name, s.Env_name)
+	// 	}
+	// }
+
+}
+
+func (api *ElasticController) ElasticGetAllData() {
+
+	var reply structs.SearchHits
+
+	elastic := types.Elastic{}
+	client, err := elastic.FuncElastic()
+	if err != nil {
+		fmt.Println("Client connection error: ", err)
+	}
+
+	var k string
+	err = client.Call("ElasticServer.SearchAllData", k, &reply)
+
+	dataRetAPI := RetAPIController{}
+
+	depRetAPI := RetAPI{depRetAPI: dataRetAPI}
+
+	if err != nil {
+		go depRetAPI.depRetAPI.RetError(api, 503, "data not found")
+		return
+	}
+
+	go depRetAPI.depRetAPI.RetAPIElasticGetAll(api, reply)
+
+}
+
+func (api *ElasticController) ElasticGetDataById() {
+	id := api.Ctx.Input.Param(":id")
+	data, err := elastic.SearchDataById(id)
+
+	if err != nil {
+
+		api.Ctx.ResponseWriter.WriteHeader(400)
+		api.Ctx.ResponseWriter.Write([]byte("error search data"))
+		return
+	}
+
+	if len(data) == 0 {
+		api.Ctx.ResponseWriter.WriteHeader(503)
+		api.Ctx.ResponseWriter.Write([]byte("data not found"))
+		return
+	}
+
+	api.Ctx.Output.SetStatus(200)
+	api.Data["json"] = data
+	api.ServeJSON()
+
+}

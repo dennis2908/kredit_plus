@@ -1,403 +1,84 @@
-{
-	"info": {
-		"_postman_id": "f5bab3c9-1fd7-4ea5-9a28-ada31ee6ff35",
-		"name": "Kredit Plus Beego",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13814383"
-	},
-	"item": [
-		{
-			"name": "Konsumen",
-			"item": [
-				{
-					"name": "Testing Get All Konsumen",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/konsumen",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"konsumen"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Get All Konsumen Mongo Insert",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/konsumen_mongo_insert",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"konsumen_mongo_insert"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Get All Konsumen Mongo Update",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/konsumen",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"konsumen"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Get Konsumen By ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/konsumen/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"konsumen",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Excel Konsumen",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Nik\":\"123123132132\",\r\n    \"Full_name\":\"Dennis Dennis Dennis M\",\r\n    \"Legal_name\": \"Dennis\",\r\n    \"Place_birth\": \"jakarta\",\r\n    \"Date_birth\" : \"1985-09-09\",\r\n    \"Salary\" : 100000000,\r\n    \"Foto_ktp\" : \"dmd.jpg\",\r\n    \"Foto_selfie\" : \"self.jpg\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9333/konsumen",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"konsumen"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Create Konsumen",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Nik\":\"123123132132\",\r\n    \"Email\":\"manullang_d@yahoo.com\",\r\n    \"Full_name\":\"Dennis Dennis Dennis M\",\r\n    \"Legal_name\": \"Dennis\",\r\n    \"Place_birth\": \"jakarta\",\r\n    \"Date_birth\" : \"1985-09-09\",\r\n    \"Salary\" : 100000000,\r\n    \"Foto_ktp\" : \"dmd.jpg\",\r\n    \"Foto_selfie\" : \"self.jpg\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9333/konsumen",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"konsumen"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Update Konsumen",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Nik\":\"123123132132\",\r\n    \"Full_name\":\"Dennis Dennis Dennis\",\r\n    \"Legal_name\": \"Dennis\",\r\n    \"Place_birth\": \"jakarta\",\r\n    \"Date_birth\" : \"1985-09-09\",\r\n    \"Salary\" : 110000000,\r\n    \"Foto_ktp\" : \"dmd.jpg\",\r\n    \"Foto_selfie\" : \"self.jpg\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9333/konsumen/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"konsumen",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Transaksi",
-			"item": [
-				{
-					"name": "Testing Get All Transaksi",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/transaksi",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksi"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Get Transaksi By ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/transaksi/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksi",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Get Transaksi By ID Konsumen",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/transaksi/konsumen/2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksi",
-								"konsumen",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Create Transaksi",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Id_konsumen\": 1,\r\n    \"No_kontrak\":\"X129299-a191919\",\r\n    \"Otr\": 5000,\r\n    \"Admin_fee\": 2000000,\r\n    \"Jml_cicilan\" : 1500000000,\r\n    \"Jml_bunga\" : 100000000,\r\n    \"Nama_aset\" : \"mobil xenia\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9333/transaksi/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksi",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Update Transaksi",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Id_konsumen\": 1,\r\n    \"No_kontrak\":\"X129299-a191919\",\r\n    \"Otr\": 5000,\r\n    \"Admin_fee\": 2000000,\r\n    \"Jml_cicilan\" : 1500000000,\r\n    \"Jml_bunga\" : 100000000,\r\n    \"Nama_aset\" : \"mobil daihatsu\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9333/transaksi/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksi",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Transaksi Detail",
-			"item": [
-				{
-					"name": "Testing Get All Transaksi Details",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/transaksidetails/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksidetails",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Get Transaksi  Details By ID Konsumen",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9333/transaksidetails/2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksidetails",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Create Transaksi",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Id_Transaksi\": 2,\r\n    \"Bulan\":3,\r\n    \"Cicilan\": 2000000\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9333/transaksidetails/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksidetails",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Testing Update Transaksi",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Id_Transaksi\": 1,\r\n    \"Bulan\":2,\r\n    \"Cicilan\": 2000000\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9333/transaksidetails/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9333",
-							"path": [
-								"transaksidetails",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+﻿{
+  "info": {
+    "_postman_id": "f5bab3c9-1fd7-4ea5-9a28-ada31ee6ff35",
+    "name": "Kredit Plus Beego",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:9333" },
+    { "key": "konsumenId", "value": "1" },
+    { "key": "transaksiId", "value": "1" },
+    { "key": "transaksiDetailId", "value": "1" },
+    { "key": "filename", "value": "konsumens" },
+    { "key": "elasticId", "value": "1" },
+    { "key": "elasticName", "value": "kredit-plus" },
+    { "key": "elasticApp", "value": "beego" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"Username\": \"admin\",\n  \"Password\": \"mypassword\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/login", "host": ["{{baseUrl}}"], "path": ["login"] }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/refresh/token", "host": ["{{baseUrl}}"], "path": ["refresh", "token"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Konsumen",
+      "item": [
+        { "name": "Get All Konsumen", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/konsumen/", "host": ["{{baseUrl}}"], "path": ["konsumen", ""] } } },
+        { "name": "Get Konsumen By ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/konsumen/{{konsumenId}}", "host": ["{{baseUrl}}"], "path": ["konsumen", "{{konsumenId}}"] } } },
+        { "name": "Create Konsumen", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"Nik\": \"123123132132\",\n  \"Email\": \"customer@example.com\",\n  \"Full_name\": \"Dennis Dennis\",\n  \"Legal_name\": \"Dennis\",\n  \"Place_birth\": \"Jakarta\",\n  \"Date_birth\": \"1985-09-09\",\n  \"Salary\": 100000000,\n  \"Foto_ktp\": \"dmd.jpg\",\n  \"Foto_selfie\": \"self.jpg\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/konsumen/", "host": ["{{baseUrl}}"], "path": ["konsumen", ""] } } },
+        { "name": "Update Konsumen", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"Nik\": \"123123132132\",\n  \"Email\": \"customer@example.com\",\n  \"Full_name\": \"Dennis Updated\",\n  \"Legal_name\": \"Dennis\",\n  \"Place_birth\": \"Jakarta\",\n  \"Date_birth\": \"1985-09-09\",\n  \"Salary\": 110000000,\n  \"Foto_ktp\": \"dmd.jpg\",\n  \"Foto_selfie\": \"self.jpg\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/konsumen/{{konsumenId}}", "host": ["{{baseUrl}}"], "path": ["konsumen", "{{konsumenId}}"] } } },
+        { "name": "Get Konsumen Mongo Insert Operations", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/konsumen_mongo_insert/", "host": ["{{baseUrl}}"], "path": ["konsumen_mongo_insert", ""] } } },
+        { "name": "Get Konsumen Mongo Update Operations", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/konsumen_mongo_update/", "host": ["{{baseUrl}}"], "path": ["konsumen_mongo_update", ""] } } },
+        { "name": "Generate Konsumen Excel", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/konsumen_excel/{{filename}}", "host": ["{{baseUrl}}"], "path": ["konsumen_excel", "{{filename}}"] } } },
+        { "name": "Read Konsumen Excel", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/konsumen_excel_read/{{filename}}", "host": ["{{baseUrl}}"], "path": ["konsumen_excel_read", "{{filename}}"] } } }
+      ]
+    },
+    {
+      "name": "Transaksi",
+      "item": [
+        { "name": "Get All Transaksi", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/transaksi/", "host": ["{{baseUrl}}"], "path": ["transaksi", ""] } } },
+        { "name": "Get Transaksi By ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/transaksi/{{transaksiId}}", "host": ["{{baseUrl}}"], "path": ["transaksi", "{{transaksiId}}"] } } },
+        { "name": "Get Transaksi By Konsumen ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/transaksi/konsumen/{{konsumenId}}", "host": ["{{baseUrl}}"], "path": ["transaksi", "konsumen", "{{konsumenId}}"] } } },
+        { "name": "Create Transaksi", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"Id_konsumen\": 1,\n  \"No_kontrak\": \"X129299-a191919\",\n  \"Otr\": 5000,\n  \"Admin_fee\": 2000000,\n  \"Jml_cicilan\": 1500000000,\n  \"Jml_bunga\": 100000000,\n  \"Nama_aset\": \"mobil xenia\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/transaksi/", "host": ["{{baseUrl}}"], "path": ["transaksi", ""] } } },
+        { "name": "Update Transaksi", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"Id_konsumen\": 1,\n  \"No_kontrak\": \"X129299-a191919\",\n  \"Otr\": 5000,\n  \"Admin_fee\": 2000000,\n  \"Jml_cicilan\": 1500000000,\n  \"Jml_bunga\": 100000000,\n  \"Nama_aset\": \"mobil daihatsu\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/transaksi/{{transaksiId}}", "host": ["{{baseUrl}}"], "path": ["transaksi", "{{transaksiId}}"] } } }
+      ]
+    },
+    {
+      "name": "Transaksi Detail",
+      "item": [
+        { "name": "Get All Transaksi Details", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/transaksidetails/", "host": ["{{baseUrl}}"], "path": ["transaksidetails", ""] } } },
+        { "name": "Get Transaksi Details By Konsumen ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/transaksidetails/{{konsumenId}}", "host": ["{{baseUrl}}"], "path": ["transaksidetails", "{{konsumenId}}"] } } },
+        { "name": "Create Transaksi Detail", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"Id_Transaksi\": 1,\n  \"Bulan\": 3,\n  \"Cicilan\": 2000000\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/transaksidetails/", "host": ["{{baseUrl}}"], "path": ["transaksidetails", ""] } } },
+        { "name": "Update Transaksi Detail", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"Id_Transaksi\": 1,\n  \"Bulan\": 2,\n  \"Cicilan\": 2000000\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/transaksidetails/{{transaksiDetailId}}", "host": ["{{baseUrl}}"], "path": ["transaksidetails", "{{transaksiDetailId}}"] } } }
+      ]
+    },
+    {
+      "name": "Elastic",
+      "item": [
+        { "name": "Search Elastic By Name And App", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/elastic?name={{elasticName}}&app={{elasticApp}}", "host": ["{{baseUrl}}"], "path": ["elastic"], "query": [{ "key": "name", "value": "{{elasticName}}" }, { "key": "app", "value": "{{elasticApp}}" }] } } },
+        { "name": "Get All Elastic Data", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/elastic/all", "host": ["{{baseUrl}}"], "path": ["elastic", "all"] } } },
+        { "name": "Get Elastic Data By ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/elastic/{{elasticId}}", "host": ["{{baseUrl}}"], "path": ["elastic", "{{elasticId}}"] } } },
+        { "name": "Insert Elastic Data", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"Name\": \"{{elasticName}}\",\n  \"App\": \"{{elasticApp}}\",\n  \"Framework\": \"beego\",\n  \"Env\": \"development\",\n  \"Lang\": \"go\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/elastic", "host": ["{{baseUrl}}"], "path": ["elastic"] } } },
+        { "name": "Delete Elastic Data", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/elastic/{{elasticId}}", "host": ["{{baseUrl}}"], "path": ["elastic", "{{elasticId}}"] } } }
+      ]
+    }
+  ]
 }
+

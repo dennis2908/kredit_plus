@@ -2,8 +2,10 @@ package main
 
 import (
 	_ "fmt"
+	loadconf "kredit_plus/LoadConf"
 	_ "kredit_plus/routers"
 	"kredit_plus/ssrf"
+	"kredit_plus/token"
 	"log"
 	"os"
 	"runtime"
@@ -18,7 +20,9 @@ import (
 )
 
 func init() {
+	loadconf.Connects()
 	beego.Debug("Filters init...")
+	beego.InsertFilter("*", beego.BeforeRouter, token.Authenticate)
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

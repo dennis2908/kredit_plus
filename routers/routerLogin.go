@@ -7,7 +7,8 @@ import (
 )
 
 func init() {
-	beego.Router("/login", &controllers.KonsumensController{}, "post:GetToken")
-	beego.Router("/refresh/token", &controllers.KonsumensController{}, "post:GetRefreshToken")
-
+	beego.Router("/login", &controllers.AuthController{}, "post:Login")
+	beego.Router("/refresh/token", &controllers.AuthController{}, "post:Refresh")
+	beego.Router("/users", &controllers.AuthController{}, "post:Register")
+	beego.Router("/users/me", &controllers.AuthController{}, "get:Me;put:Update;delete:Delete")
 }
